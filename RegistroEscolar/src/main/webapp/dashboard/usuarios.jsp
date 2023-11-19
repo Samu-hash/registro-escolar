@@ -267,6 +267,7 @@
                 type: "POST",
                 success: function (response) {
                     $('#mensajeUsuario').text(response.mensaje);
+                    alert(response.mensaje);
                     location.reload()
                 },
                 error: function (xhr, status, error) {

@@ -18,4 +18,5 @@ public class Ciclos {
     private Integer ciclo_id;
     private String nombre_ciclo;
     private String anio_academico;
+    private String estado;
 }

@@ -12,6 +12,10 @@
         <servlet-name>UsuariosController</servlet-name>
         <servlet-class>com.utec.registroescolar.controller.UsuariosController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>CiclosController</servlet-name>
+        <servlet-class>com.utec.registroescolar.controller.CiclosController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LoginController</servlet-name>
         <url-pattern>/LoginController</url-pattern>
@@ -23,6 +27,10 @@
     <servlet-mapping>
         <servlet-name>UsuariosController</servlet-name>
         <url-pattern>/UsuariosController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CiclosController</servlet-name>
+        <url-pattern>/CiclosController</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

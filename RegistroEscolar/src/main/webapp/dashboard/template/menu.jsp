@@ -30,7 +30,7 @@
 
     <!-- Heading -->
     <div class="sidebar-heading">
-        Gestiones de personas
+        Gestiones 
     </div>
 
     <!-- Nav Item - Pages Collapse Menu -->
@@ -39,6 +39,11 @@
            aria-expanded="true" aria-controls="collapseTwo">
             <i class="fas fa-fw fa-user"></i>
             <span>Usuarios</span>
+        </a>
+        <a class="nav-link collapsed" href="${pageContext.request.contextPath}/CiclosController" 
+           aria-expanded="true" aria-controls="collapseTwo">
+            <i class="fas fa-fw fa-circle"></i>
+            <span>Ciclos</span>
         </a>
     </li>
 

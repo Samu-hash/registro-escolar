@@ -5,6 +5,7 @@ com\utec\registroescolar\controller\DashboardController.class
 com\utec\registroescolar\entities\Ciclos.class
 com\utec\registroescolar\resources\Util.class
 com\utec\registroescolar\resources\MysqlConnect.class
+com\utec\registroescolar\controller\CiclosController.class
 com\utec\registroescolar\repository\CiclosRepository.class
 com\utec\registroescolar\entities\MateriasEnCiclo.class
 com\utec\registroescolar\entities\Usuarios.class

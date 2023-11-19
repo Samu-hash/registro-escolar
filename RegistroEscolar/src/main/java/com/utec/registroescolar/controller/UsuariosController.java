@@ -4,6 +4,7 @@
  */
 package com.utec.registroescolar.controller;
 
+import com.utec.registroescolar.entities.Usuarios;
 import com.utec.registroescolar.repository.CiclosRepository;
 import com.utec.registroescolar.repository.UsuariosRepository;
 import com.utec.registroescolar.resources.Util;
@@ -12,6 +13,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.Objects;
 import org.json.JSONObject;
 
@@ -46,14 +48,14 @@ public class UsuariosController extends HttpServlet {
 
         switch (action) {
             case "guardar":
-            case"actualizar":
+            case "actualizar":
                 this.guardar(request, response);
                 break;
             case "listarCiclos":
                 this.listarCiclos(response);
                 break;
             case "listarUsuarios":
-                this.listarUsuarios(response);
+                this.listarUsuarios(request, response);
                 break;
             case "eliminar":
                 this.eliminar(request, response);
@@ -63,22 +65,20 @@ public class UsuariosController extends HttpServlet {
         }
     }
 
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
     @Override
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
 
-    private void listarUsuarios(HttpServletResponse response)
+    private void listarUsuarios(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         JSONObject jsonRespuesta = new JSONObject();
         UsuariosRepository usuariosRepository = new UsuariosRepository();
 
-        jsonRespuesta.put("listaUsuarios", usuariosRepository.listarUsuarios());
+        HttpSession session = request.getSession(false);
+        Usuarios u = (Usuarios) session.getAttribute("usuario");
+
+        jsonRespuesta.put("listaUsuarios", usuariosRepository.listarUsuarios(u.getUser_id()));
 
         // Configurar la respuesta del servlet como un objeto JSON
         response.setContentType("application/json");
@@ -118,27 +118,45 @@ public class UsuariosController extends HttpServlet {
         String pago = request.getParameter("pago");
         String estadoU = request.getParameter("estadoU");
 
+        String idUsuario = request.getParameter("idUsuario");
+
         String mensaje = "";
         if (Util.findNullOrEmpty(nombre) || Util.findNullOrEmpty(apellido)
                 || Util.findNullOrEmpty(correo) || Util.findNullOrEmpty(contrasena)
                 || Util.findNullOrEmpty(role) || Util.findNullOrEmpty(ciclo)
                 || Util.findNullOrEmpty(pago) || Util.findNullOrEmpty(estadoU)) {
             mensaje = "Por favor llene los campos faltantes";
-        }else{
+        } else {
             UsuariosRepository usuariosRepository = new UsuariosRepository();
-            
+
             String esDocente = "0";
-            if(role.equals("DOCENTE"))
+            if (role.equals("DOCENTE")) {
                 esDocente = "1";
-            
-            boolean isSave = usuariosRepository.saveUser(nombre, 
-                    apellido, correo, contrasena, esDocente, 
-                    pago, Integer.parseInt(ciclo), role, estadoU);
-            
-            if(isSave)
-                mensaje = "Se ha guardado el usuario";
-            else
-                mensaje = "No se guardo el usuario";
+            }
+            if (Util.findNullOrEmpty(idUsuario)) {
+
+                boolean isSave = usuariosRepository.saveUser(nombre,
+                        apellido, correo, contrasena, esDocente,
+                        pago, Integer.parseInt(ciclo), role, estadoU);
+
+                if (isSave) {
+                    mensaje = "Se ha guardado el usuario";
+                } else {
+                    mensaje = "No se guardo el usuario";
+                }
+            } else {
+                boolean isUpdate = usuariosRepository.updateUser(nombre,
+                        apellido, correo, contrasena, esDocente,
+                        pago, Integer.parseInt(ciclo), role, estadoU,
+                        Integer.parseInt(idUsuario));
+                if (isUpdate) {
+                    mensaje = "Se ha actualizado el usuario";
+                } else {
+                    mensaje = "No se actualizo el usuario";
+                }
+
+            }
+
         }
 
         jsonRespuesta.put("mensaje", mensaje);
@@ -151,21 +169,22 @@ public class UsuariosController extends HttpServlet {
         response.getWriter().write(jsonRespuesta.toString());
     }
 
-    private void eliminar(HttpServletRequest request, 
+    private void eliminar(HttpServletRequest request,
             HttpServletResponse response)
-            throws ServletException, IOException{
-        
+            throws ServletException, IOException {
+
         JSONObject jsonRespuesta = new JSONObject();
         UsuariosRepository usuariosRepository = new UsuariosRepository();
-        
+
         Integer idUsuario = Integer.parseInt(
                 request.getParameter("usuarioEliminar"));
 
-        boolean isDelete  = usuariosRepository.eliminarUsuario(idUsuario);
-        if(isDelete)
+        boolean isDelete = usuariosRepository.eliminarUsuario(idUsuario);
+        if (isDelete) {
             jsonRespuesta.put("mensaje", "Se ha eliminado el registro");
-        else
+        } else {
             jsonRespuesta.put("mensaje", "No se elimino");
+        }
 
         // Configurar la respuesta del servlet como un objeto JSON
         response.setContentType("application/json");
