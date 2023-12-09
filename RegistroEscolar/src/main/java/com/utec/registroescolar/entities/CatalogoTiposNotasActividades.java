@@ -15,6 +15,8 @@ import lombok.Setter;
 @Setter
 public class CatalogoTiposNotasActividades {
     
-    private Integer tipoId;
-    private String nombreTipo;
+    private Integer tipo_id;
+    private String nombre_tipo;
+    private String estado;
+    
 }

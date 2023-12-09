@@ -15,9 +15,11 @@ import lombok.Setter;
 @Setter
 public class Materias {
     
-    private Integer materiaId;
+    private Integer materia_id;
+    private Integer docente_id;
     private Usuarios docente;
-    private String nombreMateria;
+    private String nombre_materia;
     private String descripcion;
+    private String estado;
     
 }

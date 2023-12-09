@@ -16,8 +16,11 @@ import lombok.Setter;
 @Setter
 public class Inscripciones {
     
-    private Integer inscripcionId;
+    private Integer inscripcion_id;
+    private Integer user_id;
+    private Integer materia_en_ciclo_id;
     private Usuarios usuario;
     private MateriasEnCiclo materiasEnCiclo;
-    private Date fechaInscripcion;
+    private String fecha_inscripcion;
+    private String estado;
 }

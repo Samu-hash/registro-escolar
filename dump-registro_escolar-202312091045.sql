@@ -1,3 +1,4 @@
+
 -- MySQL dump 10.13  Distrib 8.0.19, for Win64 (x86_64)
 --
 -- Host: localhost    Database: registro_escolar
@@ -15,9 +16,9 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
-CREATE DATABASE `registro_escolar` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */;
+create or replace database registro_escolar;
 
-use `registro_escolar`;
+use registro_escolar;
 
 --
 -- Table structure for table `catalogo_tipos_notas_actividades`
@@ -29,9 +30,10 @@ DROP TABLE IF EXISTS `catalogo_tipos_notas_actividades`;
 CREATE TABLE `catalogo_tipos_notas_actividades` (
   `tipo_id` int(11) NOT NULL AUTO_INCREMENT,
   `nombre_tipo` varchar(50) DEFAULT NULL,
+  `estado` varchar(10) DEFAULT NULL,
   PRIMARY KEY (`tipo_id`),
   UNIQUE KEY `nombre_tipo` (`nombre_tipo`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -40,6 +42,7 @@ CREATE TABLE `catalogo_tipos_notas_actividades` (
 
 LOCK TABLES `catalogo_tipos_notas_actividades` WRITE;
 /*!40000 ALTER TABLE `catalogo_tipos_notas_actividades` DISABLE KEYS */;
+INSERT INTO `catalogo_tipos_notas_actividades` VALUES (1,'Examen','PENDIENTE');
 /*!40000 ALTER TABLE `catalogo_tipos_notas_actividades` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -56,7 +59,7 @@ CREATE TABLE `ciclos` (
   `anio_academico` int(11) DEFAULT NULL,
   `estado` varchar(10) DEFAULT NULL,
   PRIMARY KEY (`ciclo_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -65,7 +68,7 @@ CREATE TABLE `ciclos` (
 
 LOCK TABLES `ciclos` WRITE;
 /*!40000 ALTER TABLE `ciclos` DISABLE KEYS */;
-INSERT INTO `ciclos` VALUES (1,'CICLO 1 2023',202301,'ACTIVO'),(2,'CICLO  2 2023',202302,'ACTIVO'),(3,'Ciclo 24',202401,'INACTIVO');
+INSERT INTO `ciclos` VALUES (1,'N/A',NULL,'ACTIVO'),(2,'CICLO  2 2023',202302,'ACTIVO'),(3,'Ciclo 24',202401,'INACTIVO'),(4,'CICLO 1 2023',202301,'ACTIVO');
 /*!40000 ALTER TABLE `ciclos` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -81,12 +84,13 @@ CREATE TABLE `inscripciones` (
   `user_id` int(11) DEFAULT NULL,
   `materia_en_ciclo_id` int(11) DEFAULT NULL,
   `fecha_inscripcion` date DEFAULT NULL,
+  `estado` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`inscripcion_id`),
   KEY `user_id` (`user_id`),
   KEY `materia_en_ciclo_id` (`materia_en_ciclo_id`),
   CONSTRAINT `inscripciones_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `usuarios` (`user_id`),
   CONSTRAINT `inscripciones_ibfk_2` FOREIGN KEY (`materia_en_ciclo_id`) REFERENCES `materias_en_ciclos` (`materia_en_ciclo_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -110,10 +114,11 @@ CREATE TABLE `materias` (
   `nombre_materia` varchar(255) DEFAULT NULL,
   `descripcion` varchar(255) DEFAULT NULL,
   `docente_id` int(11) DEFAULT NULL,
+  `estado` varchar(10) DEFAULT NULL,
   PRIMARY KEY (`materia_id`),
   KEY `docente_id` (`docente_id`),
   CONSTRAINT `materias_ibfk_1` FOREIGN KEY (`docente_id`) REFERENCES `usuarios` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -136,12 +141,15 @@ CREATE TABLE `materias_en_ciclos` (
   `materia_en_ciclo_id` int(11) NOT NULL AUTO_INCREMENT,
   `materia_id` int(11) DEFAULT NULL,
   `ciclo_id` int(11) DEFAULT NULL,
+  `estado` varchar(10) DEFAULT NULL,
+  `periodo_ini` date DEFAULT NULL,
+  `periodo_end` date DEFAULT NULL,
   PRIMARY KEY (`materia_en_ciclo_id`),
   KEY `materia_id` (`materia_id`),
   KEY `ciclo_id` (`ciclo_id`),
   CONSTRAINT `materias_en_ciclos_ibfk_1` FOREIGN KEY (`materia_id`) REFERENCES `materias` (`materia_id`),
   CONSTRAINT `materias_en_ciclos_ibfk_2` FOREIGN KEY (`ciclo_id`) REFERENCES `ciclos` (`ciclo_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -185,6 +193,63 @@ LOCK TABLES `notas_actividades` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `opciones`
+--
+
+DROP TABLE IF EXISTS `opciones`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `opciones` (
+  `id_opcion` int(11) NOT NULL AUTO_INCREMENT,
+  `icono_menu` varchar(50) NOT NULL,
+  `url_relativo` varchar(150) NOT NULL,
+  `nombre_opcion` varchar(75) NOT NULL,
+  `estado` varchar(50) NOT NULL,
+  PRIMARY KEY (`id_opcion`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `opciones`
+--
+
+LOCK TABLES `opciones` WRITE;
+/*!40000 ALTER TABLE `opciones` DISABLE KEYS */;
+INSERT INTO `opciones` VALUES (1,'fas fa-fw fa-user','/RegistroEscolar/UsuariosController','Usuarios','ACTIVO'),(2,'fas fa-fw fa-circle','/RegistroEscolar/CiclosController','Ciclos','ACTIVO'),(3,'fas fa-fw fa-book','/RegistroEscolar/MateriasController','Materias','ACTIVO'),(4,'fas fa-fw fa-list-alt','/RegistroEscolar/TipoActividadController','Tipo Actividad','ACTIVO'),(5,'fas fa-fw fa-list-alt','/RegistroEscolar/MateriasCiclosController','Materias Ciclos','ACTIVO'),(6,'fas fa-fw fa-list-alt','/RegistroEscolar/InscripcionesController','Inscripciones','ACTIVO');
+/*!40000 ALTER TABLE `opciones` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `opciones_usuarios`
+--
+
+DROP TABLE IF EXISTS `opciones_usuarios`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `opciones_usuarios` (
+  `id_optiones_usuarios` int(11) NOT NULL AUTO_INCREMENT,
+  `id_opcion` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `estado` varchar(50) NOT NULL,
+  PRIMARY KEY (`id_optiones_usuarios`),
+  KEY `user_id` (`user_id`),
+  KEY `opciones_usuarios_FK` (`id_opcion`),
+  CONSTRAINT `opciones_usuarios_FK` FOREIGN KEY (`id_opcion`) REFERENCES `opciones` (`id_opcion`),
+  CONSTRAINT `opciones_usuarios_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `usuarios` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `opciones_usuarios`
+--
+
+LOCK TABLES `opciones_usuarios` WRITE;
+/*!40000 ALTER TABLE `opciones_usuarios` DISABLE KEYS */;
+INSERT INTO `opciones_usuarios` VALUES (1,1,1,'ACTIVO'),(2,2,1,'ACTIVO'),(3,3,1,'ACTIVO'),(4,4,1,'ACTIVO'),(5,5,1,'ACTIVO'),(6,6,1,'ACTIVO');
+/*!40000 ALTER TABLE `opciones_usuarios` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `usuarios`
 --
 
@@ -206,7 +271,7 @@ CREATE TABLE `usuarios` (
   UNIQUE KEY `correo_electronico` (`correo_electronico`),
   KEY `ciclo_actual` (`ciclo_actual`),
   CONSTRAINT `usuarios_ibfk_1` FOREIGN KEY (`ciclo_actual`) REFERENCES `ciclos` (`ciclo_id`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -215,9 +280,87 @@ CREATE TABLE `usuarios` (
 
 LOCK TABLES `usuarios` WRITE;
 /*!40000 ALTER TABLE `usuarios` DISABLE KEYS */;
-INSERT INTO `usuarios` VALUES (1,'Samuel','Alvarado','samu@samu.com','samu2332',0,'PENDIENTE',1,'ADMINISTRADOR','ACTIVO'),(2,'Wilfredo','Salazar','wil@gmail.com','wil2332',0,'PENDIENTE',1,'ALUMNO','ACTIVO'),(3,'Janeth','Gomez','jk@gmail.com','janeth',1,'PENDIENTE',1,'DOCENTE','PENDIENTE APROV');
+INSERT INTO `usuarios` VALUES (1,'Marvin','Guzman','mar@mar.com','samu2332',0,'PENDIENTE',1,'ADMINISTRADOR','ACTIVO');
 /*!40000 ALTER TABLE `usuarios` ENABLE KEYS */;
 UNLOCK TABLES;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER tr_user_opciones
+AFTER INSERT
+ON usuarios 
+FOR EACH row
+begin
+	
+	if (new.role = 'ALUMNO') then
+		begin
+			insert into opciones_usuarios(id_opcion, user_id, estado) values(6, new.user_id, 'ACTIVO');
+		end;
+	elseif (new.role = 'DOCENTE') then
+		begin
+			insert into opciones_usuarios(id_opcion, user_id, estado) values(3, new.user_id, 'ACTIVO');
+		end;
+	elseif (new.role = 'ADMINISTRADOR') then
+		begin
+			insert into opciones_usuarios(id_opcion, user_id, estado) values(1, new.user_id, 'ACTIVO'),
+			(2, new.user_id, 'ACTIVO'),(3, new.user_id, 'ACTIVO'),(4, new.user_id, 'ACTIVO'),
+			(5, new.user_id, 'ACTIVO'),(6, new.user_id, 'ACTIVO');
+		end;
+	end if;
+end */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER tr_update_user_opt
+AFTER update 
+ON usuarios FOR EACH ROW
+begin 
+	
+	delete from opciones_usuarios where user_id = new.user_id;
+
+	if (new.role = 'ALUMNO') then
+		begin
+			insert into opciones_usuarios(id_opcion, user_id, estado) values(6, new.user_id, 'ACTIVO');
+		end;
+	elseif (new.role = 'DOCENTE') then
+		begin
+			insert into opciones_usuarios(id_opcion, user_id, estado) values(3, new.user_id, 'ACTIVO');
+		end;
+	elseif (new.role = 'ADMINISTRADOR') then
+		begin
+			insert into opciones_usuarios(id_opcion, user_id, estado) values(1, new.user_id, 'ACTIVO'),
+			(2, new.user_id, 'ACTIVO'),(3, new.user_id, 'ACTIVO'),(4, new.user_id, 'ACTIVO'),
+			(5, new.user_id, 'ACTIVO'),(6, new.user_id, 'ACTIVO');
+		end;
+	end if;
+	
+end */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+
+--
+-- Dumping events for database 'registro_escolar'
+--
 
 --
 -- Dumping routines for database 'registro_escolar'
@@ -232,4 +375,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-11-19  8:30:23
+-- Dump completed on 2023-12-09 10:45:11

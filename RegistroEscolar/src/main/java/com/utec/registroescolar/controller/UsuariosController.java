@@ -57,18 +57,61 @@ public class UsuariosController extends HttpServlet {
             case "listarUsuarios":
                 this.listarUsuarios(request, response);
                 break;
+            case "listarAlumnos":
+                this.listarAlumnos(request, response);
+                break;
             case "eliminar":
                 this.eliminar(request, response);
+                break;
+            case "menu":
+                this.menu(request, response);
                 break;
             default:
                 throw new AssertionError();
         }
     }
 
+    private void menu(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        JSONObject jsonRespuesta = new JSONObject();
+        UsuariosRepository usuariosRepository = new UsuariosRepository();
+
+        HttpSession session = request.getSession(false);
+        Usuarios u = (Usuarios) session.getAttribute("usuario");
+        if (!Objects.isNull(u)) {
+            jsonRespuesta.put("listaMenu", usuariosRepository.listarMenuUsuario(u.getUser_id()));
+        } else {
+            jsonRespuesta.put("listaMenu", "");
+        }
+
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write(jsonRespuesta.toString());
+
+    }
+
     @Override
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
+
+    private void listarAlumnos(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        JSONObject jsonRespuesta = new JSONObject();
+        UsuariosRepository usuariosRepository = new UsuariosRepository();
+
+        HttpSession session = request.getSession(false);
+        Usuarios u = (Usuarios) session.getAttribute("usuario");
+        jsonRespuesta.put("listaAlumnos", usuariosRepository.listarAlumnos(u.getUser_id()));
+
+        // Configurar la respuesta del servlet como un objeto JSON
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
+        // Enviar el objeto JSON como respuesta al cliente (página JSP)
+        response.getWriter().write(jsonRespuesta.toString());
+    }
 
     private void listarUsuarios(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -78,7 +121,7 @@ public class UsuariosController extends HttpServlet {
         HttpSession session = request.getSession(false);
         Usuarios u = (Usuarios) session.getAttribute("usuario");
 
-        jsonRespuesta.put("listaUsuarios", usuariosRepository.listarUsuarios(u.getUser_id()));
+        jsonRespuesta.put("listaUsuarios", usuariosRepository.listarUsuarios(u.getUser_id(), false, true));
 
         // Configurar la respuesta del servlet como un objeto JSON
         response.setContentType("application/json");

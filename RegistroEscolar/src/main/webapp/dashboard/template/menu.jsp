@@ -1,7 +1,7 @@
 <%
         
     if (session == null || session.getAttribute("usuario") == null) {
-        response.sendRedirect("../login.jsp");
+        response.sendRedirect("/RegistroEscolar/login.jsp");
     }
 %>
 <!-- Sidebar -->
@@ -34,17 +34,7 @@
     </div>
 
     <!-- Nav Item - Pages Collapse Menu -->
-    <li class="nav-item">
-        <a class="nav-link collapsed" href="${pageContext.request.contextPath}/UsuariosController" 
-           aria-expanded="true" aria-controls="collapseTwo">
-            <i class="fas fa-fw fa-user"></i>
-            <span>Usuarios</span>
-        </a>
-        <a class="nav-link collapsed" href="${pageContext.request.contextPath}/CiclosController" 
-           aria-expanded="true" aria-controls="collapseTwo">
-            <i class="fas fa-fw fa-circle"></i>
-            <span>Ciclos</span>
-        </a>
+    <li class="nav-item" id="menu-usuario">
     </li>
 
     <!-- Divider -->

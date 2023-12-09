@@ -16,6 +16,22 @@
         <servlet-name>CiclosController</servlet-name>
         <servlet-class>com.utec.registroescolar.controller.CiclosController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>MateriasController</servlet-name>
+        <servlet-class>com.utec.registroescolar.controller.MateriasController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>TipoActividadController</servlet-name>
+        <servlet-class>com.utec.registroescolar.controller.TipoActividadController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>MateriasCiclosController</servlet-name>
+        <servlet-class>com.utec.registroescolar.controller.MateriasCiclosController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>InscripcionesController</servlet-name>
+        <servlet-class>com.utec.registroescolar.controller.InscripcionesController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LoginController</servlet-name>
         <url-pattern>/LoginController</url-pattern>
@@ -31,6 +47,22 @@
     <servlet-mapping>
         <servlet-name>CiclosController</servlet-name>
         <url-pattern>/CiclosController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>MateriasController</servlet-name>
+        <url-pattern>/MateriasController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>TipoActividadController</servlet-name>
+        <url-pattern>/TipoActividadController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>MateriasCiclosController</servlet-name>
+        <url-pattern>/MateriasCiclosController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>InscripcionesController</servlet-name>
+        <url-pattern>/InscripcionesController</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

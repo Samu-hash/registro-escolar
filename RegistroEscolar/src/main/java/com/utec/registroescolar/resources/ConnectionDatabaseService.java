@@ -1,10 +1,5 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.utec.registroescolar.resources;
 
-import com.utec.registroescolar.entities.Usuarios;
 import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.Date;
@@ -26,7 +21,8 @@ public interface ConnectionDatabaseService {
 
     void closeConnection(Connection c) throws SQLException;
 
-    public static <T> Object executeSql(Connection c, String sql, List<Object[]> parameters, boolean isInsert, Class<T> clazz) throws Exception {
+    public static <T> Object executeSql(Connection c, String sql, List<Object[]> parameters,
+            boolean isInsert, Class<T> clazz) throws Exception {
         try {
             PreparedStatement statement = c.prepareStatement(sql);
             Integer count = 1;
@@ -34,7 +30,7 @@ public interface ConnectionDatabaseService {
                 if (parameter[0] == "Integer") {
                     statement.setInt(count, Integer.parseInt(parameter[1].toString()));
                 } else if (parameter[0] == "String") {
-                    statement.setString(count, parameter[1].toString());
+                    statement.setString(count, (parameter[1] == null) ? null : parameter[1].toString());
                 } else if (parameter[0] == "Date") {
                     statement.setDate(count, (Date) parameter[1]);
                 }
@@ -68,8 +64,6 @@ public interface ConnectionDatabaseService {
                     String columnName = metaData.getColumnName(i);
 
                     for (Field field : fields) {
-
-                        Class<?> fieldType = field.getType();
 
                         if (field.getName().equalsIgnoreCase(columnName)) {
 

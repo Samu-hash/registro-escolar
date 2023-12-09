@@ -5,6 +5,7 @@
 package com.utec.registroescolar.repository;
 
 import com.utec.registroescolar.entities.Ciclos;
+import com.utec.registroescolar.entities.Opciones;
 import com.utec.registroescolar.entities.Usuarios;
 import com.utec.registroescolar.resources.ConnectionDatabaseService;
 import com.utec.registroescolar.resources.MysqlConnect;
@@ -19,6 +20,28 @@ import java.util.Objects;
 public class UsuariosRepository {
 
     private ConnectionDatabaseService connect;
+
+    public List<Opciones> listarMenuUsuario(Integer idUsuario) {
+        connect = new MysqlConnect();
+        try {
+            List<Object[]> parameters = new ArrayList<>();
+            parameters.add(new Object[]{"Integer", idUsuario});
+
+            List<Opciones> list = (List) ConnectionDatabaseService.executeSql(
+                    connect.connectToDabase(),
+                    "select o.id_opcion, o.icono_menu, o.url_relativo, o.nombre_opcion, o.estado "
+                    + "from opciones o inner join opciones_usuarios ou on (o.id_opcion = ou.id_opcion) "
+                    + "where ou.user_id = ?",
+                    parameters, false, Opciones.class);
+
+            if (Objects.isNull(list) || list.isEmpty()) {
+                return null;
+            }
+            return list;
+        } catch (Exception e) {
+            return null;
+        }
+    }
 
     public boolean validateCredential(String email, String password) {
         connect = new MysqlConnect();
@@ -72,17 +95,59 @@ public class UsuariosRepository {
         }
     }
 
-    public List<Usuarios> listarUsuarios(Integer idUsuario) {
+    public List<Usuarios> listarAlumnos(Integer idUsuario) {
+        connect = new MysqlConnect();
+        try {
+            List<Object[]> parameters = new ArrayList<>();
+            parameters.add(new Object[]{"Integer", idUsuario});
+
+            String sql = "select * from usuarios where "
+                    + "estado_usuario <> 'INACTIVO' and user_id <> ? "
+                    + "and role='ALUMNO' and es_docente = 0";
+
+            List<Usuarios> list = (List) ConnectionDatabaseService.executeSql(
+                    connect.connectToDabase(), sql,
+                    parameters, false, Usuarios.class);
+
+            for (Usuarios u : list) {
+                List<Object[]> parameters1 = new ArrayList<>();
+
+                parameters1.add(new Object[]{"Integer", u.getCiclo_actual()});
+                List<Ciclos> c = (List) ConnectionDatabaseService.executeSql(connect.connectToDabase(),
+                        "select * from ciclos where ciclo_id = ?",
+                        parameters1, false, Ciclos.class);
+
+                if (!Objects.isNull(c)) {
+                    u.setCicloActual(c.get(0));
+                }
+            }
+            return list;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public List<Usuarios> listarUsuarios(Integer idUsuario, boolean buscarDocente, boolean esDiferente) {
         connect = new MysqlConnect();
         try {
 
             List<Object[]> parameters = new ArrayList<>();
             parameters.add(new Object[]{"Integer", idUsuario});
 
+            String sql = "select * from usuarios where "
+                    + "estado_usuario <> 'INACTIVO' ";
+
+            if (esDiferente) {
+                sql += "and user_id <> ? ";
+            } else {
+                sql += "and user_id = ? ";
+            }
+            if (buscarDocente) {
+                sql += "and es_docente = '1'";
+            }
+
             List<Usuarios> list = (List) ConnectionDatabaseService.executeSql(
-                    connect.connectToDabase(),
-                    "select * from usuarios where "
-                    + "estado_usuario <> 'INACTIVO' and user_id <> ?",
+                    connect.connectToDabase(), sql,
                     parameters, false, Usuarios.class);
 
             for (Usuarios u : list) {

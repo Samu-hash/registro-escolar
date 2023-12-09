@@ -93,7 +93,7 @@ public class LoginController extends HttpServlet {
         if (Util.findNullOrEmpty(email) || Util.findNullOrEmpty(password)) {
             message = "Es requerido el usuario y contraseña";
             request.setAttribute("message", message);
-            response.sendRedirect(request.getContextPath() + "/DashboardController");
+            response.sendRedirect(request.getContextPath() + "/LoginController");
         } else {
             UsuariosRepository usuariosRepository = new UsuariosRepository();
             boolean isAuth = usuariosRepository.validateCredential(email, password);
@@ -136,7 +136,8 @@ public class LoginController extends HttpServlet {
                 dispatcher.forward(request, response);
             } else {
                 UsuariosRepository usuariosRepository = new UsuariosRepository();
-                boolean isUpdate = usuariosRepository.saveUser(nombres, apellidos, correo, clave, "0", null, null, "ALUMNO", "PENDIENTE APROV");
+                boolean isUpdate = usuariosRepository.saveUser(nombres, apellidos, correo, clave, 
+                        "0", null, 1, "ALUMNO", "PENDIENTE APROV");
 
                 message = isUpdate ? "Usuario creado." : "No se pudo crear el usuario.";
                 request.setAttribute("message", message);
